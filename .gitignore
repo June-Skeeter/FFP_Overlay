@@ -1,6 +1,5 @@
 **/__pycache__/
 **/.venv/
 **/.quarto/
-
-/.quarto/
+**/.ipynb_checkpoints/
 Example_Outputs/

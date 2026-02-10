@@ -1,0 +1,51 @@
+Input_Variable_Names:
+  bearing: bearing 
+  zm: zm
+  canopy_height: canopy_height
+  z0: 
+  h: hpbl
+  ol: L
+  sigmav: V_SIGMA
+  ustar: USTAR
+  umean: wind_speed
+  wind_dir: wind_dir
+
+[Input_Variable_Metadata]
+bearing: Measurement direction offset from north
+zm:  Measurement height above ground (give dynamically if variable) or set fixed value from ini file.\nWill automatically account for displacement height (zm-d).
+canopy_height:  Canopy height (m) can be a dynamic (from half-hourly input data) or static (from site configuration file).\nIf not provided in input data, a static value will be set using site_config file.
+z0: roughness length - provide explicitly if known, leave blank to auto calculate as a fraction of canopy height (see [Assumptions]). Leave blank AND set [Assumptions] roughness_length :  None to run without 
+h: Height of planetary boundary layer (m) - if not avaialble, see https://github.com/ubc-micromet/Biomet.net/blob/main/Python/ExtractNARR.py
+ol: Obukhov length (m)
+sigmav: Standard deviation of horizontal wind (m/s)
+ustar: Friction velocity (m/s)
+umean: Mean wind speed (m/s)\nNote the program expects u-mean, but will only actually be used if FFP is run without z0
+wind_dir: Wind direction in degrees from north (deg)
+
+[FFP_Parameters]
+domain: 1000
+dx: 2
+rs: .5,.75,.9
+exclude_wake: 30
+
+[FFP_Parameters_Metadata]
+domain: Upwind distance (m) over which to calculate.\n Resulting footprint will be calculated over circular area with a radius :  domain, centered on the lat,long coordinates of the EC Station.\n Outputs will be automatically georeferenced using lat,long coordinates of the EC Station.\nFFP - must be >:  600
+dx: Cell size of the raster grid:\nlarger cells :  faster runs & less precise outputs > smaller cell :  slower runs & more precise outputs
+rs: Flux contribution contours (% level)
+exclude_wake: Dont calculate fluxes for observations with a wind_dir between (bearing -180) +/- exclude_wake 
+
+[Assumptions]
+# Both are as fraction of canopy height - these are the defaults used by EddyPro
+roughness_length: 0.15
+displacement_height: 0.67
+
+[Output]
+; Where to save the outputs
+dpath: Example_Outputs/
+; Soothing factor for contours; calculated as proportion of the cell size (dx)
+; e.g. a smoothing_factor :  1 :  dx, smoothing_factor :  0.5 :  0.5dx
+smoothing_factor: 1
+
+[Multi_Processing]
+Processes: 4
+BatchSize: 100
